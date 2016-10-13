@@ -1,0 +1,59 @@
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" data-background-color="blue">
+                                    <h4 class="title">Services</h4>
+                                    <p class="category">Service Info and Status</p>
+                                </div>
+                                <div class="card-content table-responsive">
+                                    <table class="table">
+                                        <thead class="text-primary">
+                                        <th>Service Name</th>
+                                        <th>Port</th>
+                                        <th>Status</th>
+                                        </thead>
+                                        <tbody id="service_list">
+                                            #foreach($service in $SERVICES)
+                                            <tr id="${service.name()}">
+                                                <td>${service.name()}</td>
+                                                <td>${service.port()}</td>
+                                                <td id="status_${service.name()}"#if($service.available()) class="text-success">On-Line#else class="text-danger">Off-Line#end</td>
+                                            </tr>
+                                            #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" data-background-color="green">
+                                    <h4 class="title">Add Service</h4>
+                                    <p class="category">Add Service to monitor it's state</p>
+                                </div>
+                                <div class="card-content">
+                                    <form>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label">Service Name</label>
+                                                <input type="text" class="form-control" id="service_name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label">Service Port</label>
+                                                <input type="text" class="form-control" id="service_port">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <button type="button" class="btn btn-success btn-round btn-just-icon" id="add_service">
+                                                <i class="material-icons">add</i><div class="ripple-container"></div>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

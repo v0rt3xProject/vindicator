@@ -1,0 +1,117 @@
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" data-background-color="purple">
+                                    <h4 class="title">Traffic Info</h4>
+                                    <p class="category">View Packet by Service</p>
+                                </div>
+                                <div class="card-content table-responsive">
+                                    <table class="table">
+                                        <thead class="text-primary">
+                                            <th>Service</th>
+                                            <th>Direction</th>
+                                            <th>Client</th>
+                                            <th>Length</th>
+                                            <th>Data</th>
+                                        </thead>
+                                        <tbody id="traffic">
+                                            #foreach($packet in $PACKETS)
+                                            <tr id="packet_${packet.id()}">
+                                                <td>${packet.service().name()} (${packet.service().port()})</td>
+                                                <td>#if($packet.direction()) Inbound #else Outgoing #end</td>
+                                                <td>${packet.client()}</td>
+                                                <td>${packet.length()}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="tab" data-target="#data_${packet.id()}">Show</button>
+                                                </td>
+                                            </tr>
+                                            #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-content">
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-2">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Service</label>
+                                                            <select class="form-control" id="service">
+                                                                <option value="all">-</option>
+                                                                #foreach($service in $SERVICES)
+                                                                    <option value="${service.name()}">${service.name()} (${service.port()})</option>
+                                                                #end
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Direction</label>
+                                                            <select class="form-control" id="direction">
+                                                                <option value="all">All</option>
+                                                                <option value="in">Inbound</option>
+                                                                <option value="out">Outgoing</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Client</label>
+                                                            <input type="text" id="client" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Length</label>
+                                                            <input type="text" id="length" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group label-floating">
+                                                            <label class="control-label">Data</label>
+                                                            <input type="text" id="data" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-content">
+                                            <div class="tab-content" id="traffic_data">
+                                                #foreach($packet in $PACKETS)
+                                                <div id="data_${packet.id()}" class="tab-pane">
+                                                    <ul class="nav nav-tabs">
+                                                        <li class="active"><a data-toggle="tab" href="#data_hex_${packet.id()}">HEX</a></li>
+                                                        <li><a data-toggle="tab" href="#data_ascii_${packet.id()}">ASCII</a></li>
+                                                    </ul>
+
+                                                    <div class="tab-content">
+                                                        <div id="data_hex_${packet.id()}" class="tab-pane active">
+                                                            <pre>${packet.hex()}</pre>
+                                                        </div>
+                                                        <div id="data_ascii_${packet.id()}" class="tab-pane">
+                                                            <pre>${packet.ascii()}</pre>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                #end
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

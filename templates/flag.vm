@@ -1,0 +1,110 @@
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="orange">
+                                    <i class="material-icons">autorenew</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Processing</p>
+                                    <h3 class="title" id="stat_processing">${PROCESSING}</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        Processing queue size
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="purple">
+                                    <i class="material-icons">trending_up</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Queued</p>
+                                    #set($QUEUED_TOTAL = $QUEUED_HI + $QUEUED_NO + $QUEUED_LO)
+                                    <h3 class="title" id="stat_que_tot">${QUEUED_TOTAL}</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        <i class="material-icons text-danger">trending_up</i> <span id="stat_hi">${QUEUED_HI}</span>
+                                        <i class="material-icons text-info">trending_flat</i> <span id="stat_no">${QUEUED_NO}</span>
+                                        <i class="material-icons text-success">trending_down</i> <span id="stat_lo">${QUEUED_LO}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="green">
+                                    <i class="material-icons">done_all</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Accepted</p>
+                                    <h3 class="title" id="stat_accepted">${ACCEPTED}</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        Total flags accepted
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="red">
+                                    <i class="material-icons">error_outline</i>
+                                </div>
+                                <div class="card-content">
+                                    <p class="category">Rejected</p>
+                                    <h3 class="title" id="stat_rejected">${REJECTED}</h3>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="stats">
+                                        Total flags rejected
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header" data-background-color="green">
+                                    <h4 class="title">Last Flags</h4>
+                                    <p class="category">Last update on: <span id="last_updated">${TIME_STAMP}</span></p>
+                                </div>
+                                <div class="card-content table-responsive">
+                                    <table class="table">
+                                        <thead class="text-primary">
+                                            <th>Content</th>
+                                            <th>Priroty</th>
+                                            <th>Status</th>
+                                            <th>Time</th>
+                                        </thead>
+                                        <tbody id="stat_flags">
+                                        #foreach ($flag in $FLAGS)
+                                            <tr id="${flag.id()}_${flag.state()}">
+                                                <td>${flag.id()}</td>
+                                                <td class="text-muted">${flag.flag()}</td>
+                                                <td>${flag.priority()}</td>
+                                                #if( $flag.state() == "Queued" )
+                                                <td class="text-info">${flag.state()}</td>
+                                                #elseif( $flag.state() == "Accepted" )
+                                                <td class="text-success">${flag.state()}</td>
+                                                #elseif( $flag.state() == "Rejected" )
+                                                <td class="text-danger">${flag.state()}</td>
+                                                #else
+                                                <td class="text-primary">${flag.state()}</td>
+                                                #end
+                                                <td>${flag.time()}</td>
+                                            </tr>
+                                        #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>

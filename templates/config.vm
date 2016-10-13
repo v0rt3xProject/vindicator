@@ -1,0 +1,79 @@
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" data-background-color="red">
+                                    <h4 class="title">Themis Settings</h4>
+                                    <p class="category">Set Themis related parameters</p>
+                                </div>
+                                <div class="card-content">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label">Themis Protocol</label>
+                                                    <select class="form-control" id="themis_protocol">
+                                                        <option value="http" #if($THEMIS_PROTOCOL.equals('http'))selected#end>HTTP</option>
+                                                        <option value="https" #if($THEMIS_PROTOCOL.equals('https'))selected#end>HTTPS</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label">Themis Host</label>
+                                                    <input type="text" id="themis_host" class="form-control" #if($THEMIS_HOST)value="${THEMIS_HOST}"#end>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label">Themis Port</label>
+                                                    <input type="text" id="themis_port" class="form-control" #if($THEMIS_PORT)value="${THEMIS_PORT}"#end>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <button type="button" id="themis_save" class="btn btn-primary pull-right btn-round btn-danger">Save</button>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" data-background-color="red">
+                                    <h4 class="title">eXploit Settings</h4>
+                                    <p class="category">Set exploit runner settings</p>
+                                </div>
+                                <div class="card-content">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label">Your Team</label>
+                                                    <select class="form-control" id="xploit_team">
+                                                        <option>-</option>
+                                                        #foreach($team in $TEAMS)
+                                                        <option value="${team.id()}" #if($XPLOIT_TEAM.equals($team.id()))selected#end>${team.name()}</option>
+                                                        #end
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label">Execution Interval (seconds)</label>
+                                                    <input type="text" id="xploit_interval" class="form-control" #if($XPLOIT_INTERVAL)value="${XPLOIT_INTERVAL}"#end>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+
+                                    <button type="button" id="xploit_save" class="btn btn-primary pull-right btn-round btn-danger">Save</button>
+
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
