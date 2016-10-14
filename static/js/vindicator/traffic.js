@@ -4,23 +4,35 @@ var client_filter = $("#client").first();
 var length_filter = $("#length").first();
 var data_filter = $("#data").first();
 
+var sequence_filter = $("#sequence").first();
+var sequence_range = $("#sequence_range").first();
+
 var show_limit = $("#limit").first();
 var show_offset = $("#offset").first();
 
 var traffic_list = $("#traffic").first();
 var traffic_data_list = $("#traffic_data").first();
 
+function setFilter(field, value) {
+    var field_element = $('#' + field).first();
+    console.log("Setting '" + field + "' to '" + value + "'");
+    field_element.val(value);
+    field_element.trigger("change");
+}
+
 function getUpdates() {
     send({
         action: "list",
         view: "traffic",
-        limit: 50, // parseInt(show_limit.val()),
-        offset: 0, // parseInt(show_offset.val()),
+        limit: parseInt(show_limit.val()),
+        offset: parseInt(show_offset.val()),
         filter: {
             service: service_filter.val(),
             direction: direction_filter.val(),
             client: client_filter.val(),
             length: length_filter.val(),
+            sequence: sequence_filter.val(),
+            sequenceRange: sequence_range.val(),
             data: data_filter.val()
         }
     });
@@ -53,10 +65,28 @@ function setUpdates(data) {
 
                     var tr = $('<tr></tr>').attr('id', 'packet_' + packet.id);
 
-                    tr.append($("<td></td>").text(packet.service.name + " (" + packet.service.port + ")"));
-                    tr.append($("<td></td>").text(packet.direction ? " Inbound " : " Outgoing "));
-                    tr.append($("<td></td>").text(packet.client));
+                    tr.append($("<td></td>").append(
+                        $("<a></a>").click(function () {
+                            setFilter('service', packet.service.name);
+                        }).text(packet.service.name + " (" + packet.service.port + ")")
+                    ));
+                    tr.append($("<td></td>").append(
+                        $("<a></a>").click(function () {
+                            setFilter('direction', packet.direction ? "in" : "out");
+                        }).text(packet.direction ? " Inbound " : " Outgoing ")
+                    ));
+                    tr.append($("<td></td>").append(
+                        $("<a></a>").click(function () {
+                            setFilter('client', packet.client);
+                        }).text(packet.client)
+                    ));
                     tr.append($("<td></td>").text(packet.length));
+                    tr.append($("<td></td>").append(
+                        $("<a></a>").click(function () {
+                            setFilter('sequence', packet.sequence);
+                        }).text(packet.sequence)
+                    ));
+                    tr.append($("<td></td>").text(packet.time));
 
                     tr.append($("<td></td>").append(
                         $("<button></button>")
@@ -77,7 +107,7 @@ function setUpdates(data) {
                     }
 
                     if (!tr_created) {
-                        traffic_list.append(tr);
+                        traffic_list.prepend(tr);
                     }
                 }
 
@@ -118,7 +148,7 @@ function setUpdates(data) {
                     }
 
                     if (!div_created) {
-                        traffic_data_list.append(div);
+                        traffic_data_list.prepend(div);
                     }
                 }
             }

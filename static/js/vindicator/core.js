@@ -50,7 +50,9 @@ function handleMessage(event) {
 }
 
 function send(data) {
-    socket.send(JSON.stringify(data));
+    if (ready) {
+        socket.send(JSON.stringify(data));
+    }
 }
 
 function init(ws_path) {

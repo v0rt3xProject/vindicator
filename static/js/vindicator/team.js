@@ -16,15 +16,28 @@ function setUpdates(data) {
         } else if (data.type == "list") {
             for (var i = 0; i < data.teams.length; i++) {
                 var team = data.teams[i];
-                if (!$("tr#" + team.name).length) {
-                    var team_row = $("<tr></tr>").attr("id", team.name);
+                if (!$("tr#" + team.id).length) {
+                    var team_row = $("<tr></tr>").attr("id", team.id);
 
                     team_row.append($("<td></td>").text(team.id));
                     team_row.append($("<td></td>").text(team.name));
                     team_row.append($("<td></td>").text(team.ip));
+                    team_row.append($("<td></td>").append(
+                        $("<button></button>")
+                            .attr('type', 'button')
+                            .attr('class', 'btn btn-danger btn-sm')
+                            .click(function () {
+                                deleteTeam(team.id);
+                            })
+                            .text("Delete")
+                    ));
 
                     $("#team_list").append(team_row);
                 }
+            }
+        } else if (data.type == "delete") {
+            if (data.success) {
+                $("tr#" + data.target).remove();
             }
         }
     }
@@ -60,3 +73,12 @@ $("#new_team").click(function () {
         }
     });
 });
+
+
+function deleteTeam(teamId) {
+    send({
+        action: 'delete',
+        view: 'team',
+        target: teamId
+    });
+}

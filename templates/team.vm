@@ -12,13 +12,17 @@
                                             <th>ID</th>
                                             <th>Team</th>
                                             <th>IP</th>
+                                            <th></th>
                                         </thead>
                                         <tbody id="team_list">
                                         #foreach($team in $TEAMS)
-                                            <tr id="${team.name()}" #if($team.self())class="text-muted"#end>
+                                            <tr id="${team.id()}">
                                                 <td>${team.id()}</td>
                                                 <td>${team.name()}</td>
                                                 <td>${team.ip()}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteTeam('${team.id()}');">Delete</button>
+                                                </td>
                                             </tr>
                                         #end
                                         </tbody>

@@ -4,6 +4,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import org.apache.velocity.VelocityContext;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.v0rt3x.vindicator.VindicatorCore;
@@ -70,6 +71,7 @@ public class Team implements WebUIPageHandler {
     @SuppressWarnings("unchecked")
     @GenericMethod("add")
     public void add(JSONObject request, JSONObject response) {
+        teams.createIndex(new Document("id", 1), new IndexOptions().unique(true));
         teams.createIndex(new Document("name", 1), new IndexOptions().unique(true));
         teams.createIndex(new Document("ip", 1), new IndexOptions().unique(true));
 
@@ -87,6 +89,9 @@ public class Team implements WebUIPageHandler {
         } else if (teams.count(new Document("ip", ip)) > 0) {
             response.put("success", false);
             response.put("message", String.format("TeamObject with IP %s already exists!", ip));
+        } else if (teams.count(new Document("id", id)) > 0) {
+            response.put("success", false);
+            response.put("message", String.format("TeamObject with ID %s already exists!", id));
         } else {
             teams.insertOne(new Document("name", name).append("id", id).append("ip", ip));
 
@@ -111,5 +116,25 @@ public class Team implements WebUIPageHandler {
         }
 
         response.put("teams", teamList);
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @GenericMethod("delete")
+    public void delete(JSONObject request, JSONObject response) {
+        String target = (String) request.get("target");
+
+        Document filter = new Document("id", target);
+
+        response.put("notify", true);
+        if (teams.deleteOne(filter).getDeletedCount() > 0) {
+            response.put("success", true);
+            response.put("message", String.format("Team %s deleted", target));
+
+            response.put("target", target);
+        } else {
+            response.put("success", false);
+            response.put("message", String.format("Unable to delete Team %s", target));
+        }
     }
 }

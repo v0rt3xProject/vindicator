@@ -18,18 +18,33 @@ function setUpdates(data) {
         } else if(data.type == "list") {
             for (var i = 0; i < data.service.length; i++) {
                 var service = data.service[i];
-                if (!$("tr#" + service.name).length) {
-                    var service_row = $("<tr></tr>").attr("id", service.name);
+                if (!$("tr#" + service.id).length) {
+                    var service_row = $("<tr></tr>").attr("id", service.id);
 
+                    service_row.append($("<td></td>").text(service.id));
                     service_row.append($("<td></td>").text(service.name));
                     service_row.append($("<td></td>").text(service.port));
                     service_row.append($("<td></td>")
-                        .attr("id", "status_" + service.name)
+                        .attr("id", "status_" + service.id)
                         .attr("class", (service.available) ? "text-success" : "text-danger")
                         .text((service.available) ? "On-line" : "Off-Line"));
 
+                    service_row.append($("<td></td>").append(
+                        $("<button></button>")
+                            .attr('type', 'button')
+                            .attr('class', 'btn btn-danger btn-sm')
+                            .click(function () {
+                                deleteService(service.id);
+                            })
+                            .text("Delete")
+                    ));
+
                     $("#service_list").append(service_row);
                 }
+            }
+        } else if (data.type == "delete") {
+            if (data.success) {
+                $("tr#" + data.target).remove();
             }
         }
     }
@@ -56,3 +71,12 @@ $('#add_service').click(function () {
         port: port.val(),
     });
 });
+
+
+function deleteService(serviceName) {
+    send({
+        action: 'delete',
+        view: 'service',
+        target: serviceName
+    });
+}

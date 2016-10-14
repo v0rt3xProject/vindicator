@@ -17,6 +17,7 @@
                                         <th>Agent Status</th>
                                         <th>Task</th>
                                         <th>Task State</th>
+                                        <th></th>
                                         </thead>
                                         <tbody id="agent_list">
                                             #foreach($agent in $AGENTS)
@@ -33,6 +34,9 @@
                                                 #end
                                                 <td id="task_${agent.id()}">#if($agent.task())${agent.task()}#else-#end</td>
                                                 <td id="state_${agent.id()}">${agent.taskState()}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteAgent('${agent.id()}');">Delete</button>
+                                                </td>
                                             </tr>
                                             #end
                                         </tbody>

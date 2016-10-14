@@ -161,4 +161,23 @@ public class Agent implements WebUIPageHandler {
         response.put("agents", agentList);
         response.put("timestamp", System.currentTimeMillis());
     }
+
+    @SuppressWarnings("unchecked")
+    @GenericMethod("delete")
+    public void delete(JSONObject request, JSONObject response) {
+        String target = (String) request.get("target");
+
+        Document filter = new Document("agentId", target);
+
+        response.put("notify", true);
+        if (agents.deleteOne(filter).getDeletedCount() > 0) {
+            response.put("success", true);
+            response.put("message", String.format("Agent %s deleted", target));
+
+            response.put("target", target);
+        } else {
+            response.put("success", false);
+            response.put("message", String.format("Unable to delete Agent %s", target));
+        }
+    }
 }

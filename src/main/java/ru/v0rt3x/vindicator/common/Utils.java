@@ -28,4 +28,16 @@ public class Utils {
 
         return temp;
     }
+
+    public static Long tryParseLong(String value, Long failOver) {
+        try { return Long.parseLong(value); } catch (Exception ignored) {}
+
+        return failOver;
+    }
+
+    public static Integer tryParseInt(String value, Integer failOver) {
+        try { return Integer.parseInt(value); } catch (Exception ignored) {}
+
+        return failOver;
+    }
 }

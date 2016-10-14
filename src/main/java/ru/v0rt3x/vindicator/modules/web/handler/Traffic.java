@@ -9,6 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import ru.v0rt3x.vindicator.VindicatorCore;
 import ru.v0rt3x.vindicator.common.GenericMethod;
+import ru.v0rt3x.vindicator.common.Utils;
 import ru.v0rt3x.vindicator.modules.web.WebUIPageHandler;
 import ru.v0rt3x.vindicator.modules.web.WebUIPages;
 
@@ -40,8 +41,9 @@ public class Traffic implements WebUIPageHandler {
 
         private byte[] data;
         private Long time;
+        private Long sequence;
 
-        private PacketObject(ObjectId id, Document service, boolean direction, String clientHost, Integer clientPort, String data, Long time) {
+        private PacketObject(ObjectId id, Document service, boolean direction, String clientHost, Integer clientPort, String data, Long time, Long sequence) {
             this.id = id;
             this.service = Service.ServiceObject.fromBSON(service);
             this.direction = direction;
@@ -49,6 +51,7 @@ public class Traffic implements WebUIPageHandler {
             this.clientPort = clientPort;
             this.data = (data != null) ? Base64.getDecoder().decode(data) : new byte[0];
             this.time = time;
+            this.sequence = sequence;
         }
 
         public String id() {
@@ -133,6 +136,10 @@ public class Traffic implements WebUIPageHandler {
             return time;
         }
 
+        public Long sequence() {
+            return sequence;
+        }
+
         public static PacketObject fromBSON(Document doc) {
             return new PacketObject(
                 doc.getObjectId("_id"),
@@ -141,7 +148,8 @@ public class Traffic implements WebUIPageHandler {
                 doc.getString("clientHost"),
                 Math.toIntExact(doc.getLong("clientPort")),
                 doc.getString("data"),
-                doc.getLong("time")
+                doc.getLong("time"),
+                doc.getLong("sequenceId")
             );
         }
     }
@@ -168,6 +176,8 @@ public class Traffic implements WebUIPageHandler {
         String direction = (String) filter.get("direction");
         String client = (String) filter.get("client");
         String length = (String) filter.get("length");
+        String sequence = (String) filter.get("sequence");
+        String sequenceRange = (String) filter.get("sequenceRange");
         String data = (String) filter.get("data");
 
         Integer limit = Math.toIntExact((Long) request.get("limit"));
@@ -203,6 +213,16 @@ public class Traffic implements WebUIPageHandler {
             }
         }
 
+        if ((sequence != null)&&(sequence.length() > 0)) {
+            Long sequenceId = Utils.tryParseLong(sequence, -1L);
+            Long sequenceIdRange = Utils.tryParseLong(sequenceRange, 10000L);
+
+            Long sequenceIdStart = Math.max(sequenceId - sequenceIdRange, 0);
+            Long sequenceIdEnd = sequenceId + sequenceIdRange;
+
+            trafficFilter.append("sequenceId", new Document("$gte", sequenceIdStart).append("$lte", sequenceIdEnd));
+        }
+
         if ((data != null)&&(data.length() > 0)) {
             trafficFilter.append("data", new Document("$regex", data));
         }
@@ -223,6 +243,9 @@ public class Traffic implements WebUIPageHandler {
             packetObject.put("direction", packet.direction());
             packetObject.put("client", packet.client());
             packetObject.put("length", packet.length());
+
+            packetObject.put("time", packet.time());
+            packetObject.put("sequence", packet.sequence());
 
             JSONObject dataObject = new JSONObject();
 

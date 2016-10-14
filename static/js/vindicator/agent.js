@@ -36,6 +36,16 @@ function setUpdates(data) {
                     agent_row.append($("<td></td>").attr("id", "task_" + agent.id).text((agent.task) ? agent.task : "-"));
                     agent_row.append($("<td></td>").attr("id", "state_" + agent.id).text(agent.taskState));
 
+                    agent_row.append($("<td></td>").append(
+                        $("<button></button>")
+                            .attr('type', 'button')
+                            .attr('class', 'btn btn-danger btn-sm')
+                            .click(function () {
+                                deleteAgent(agent.id);
+                            })
+                            .text("Delete")
+                    ));
+
                     $("agent_list").append(agent_row);
                 } else {
                     if (data.timestamp - agent.lastSeen < 20000) {
@@ -47,6 +57,18 @@ function setUpdates(data) {
                     $("td#state_" + agent.id).text(agent.taskState);
                 }
             }
+        } else if (data.type == "delete") {
+            if (data.success) {
+                $("tr#" + data.target).remove();
+            }
         }
     }
+}
+
+function deleteAgent(agentId) {
+    send({
+        action: 'delete',
+        view: 'agent',
+        target: agentId
+    });
 }

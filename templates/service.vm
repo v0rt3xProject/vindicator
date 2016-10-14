@@ -9,16 +9,22 @@
                                 <div class="card-content table-responsive">
                                     <table class="table">
                                         <thead class="text-primary">
+                                        <th>ID</th>
                                         <th>Service Name</th>
                                         <th>Port</th>
                                         <th>Status</th>
+                                        <th></th>
                                         </thead>
                                         <tbody id="service_list">
                                             #foreach($service in $SERVICES)
-                                            <tr id="${service.name()}">
+                                            <tr id="${service.id()}">
+                                                <td>${service.id()}</td>
                                                 <td>${service.name()}</td>
                                                 <td>${service.port()}</td>
-                                                <td id="status_${service.name()}"#if($service.available()) class="text-success">On-Line#else class="text-danger">Off-Line#end</td>
+                                                <td id="status_${service.id()}"#if($service.available()) class="text-success">On-Line#else class="text-danger">Off-Line#end</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteService('${service.id()}');">Delete</button>
+                                                </td>
                                             </tr>
                                             #end
                                         </tbody>

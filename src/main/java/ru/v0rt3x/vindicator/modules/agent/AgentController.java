@@ -167,6 +167,7 @@ public class AgentController implements Component {
                     .append("direction", request.get("direction"))
                     .append("time", request.get("time"))
                     .append("data", request.get("data"))
+                    .append("sequenceId", request.get("sequenceId"))
             );
         }
     }
